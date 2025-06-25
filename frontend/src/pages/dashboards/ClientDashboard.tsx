@@ -1,3 +1,10 @@
+import Navbar from "../../components/Navbar";
+
 export default function ClientDashboard() {
-  return <h2>Bienvenue sur le Dashboard Client</h2>;
+  return (
+    <>
+      <Navbar />
+      <h2>Bienvenue sur le Dashboard Admin</h2>
+    </>
+  );
 }

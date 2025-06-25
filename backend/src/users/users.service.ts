@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { User } from './user.entity';
+import { User, UserRole } from './user.entity';
 
 @Injectable()
 export class UsersService {
@@ -14,7 +14,7 @@ export class UsersService {
     return this.repo.findOne({ where: { email } });
   }
 
-  async create(email: string, password: string, role: 'CLIENT' | 'PRESTATAIRE'): Promise<User> {
+  async create(email: string, password: string, role: UserRole): Promise<User> {
     const user = this.repo.create({ email, password, role });
     return this.repo.save(user);
   }

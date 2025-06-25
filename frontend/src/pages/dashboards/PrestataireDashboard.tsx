@@ -1,3 +1,10 @@
+import Navbar from "../../components/Navbar";
+
 export default function PrestataireDashboard() {
-  return <h2>Bienvenue sur le Dashboard Prestataire</h2>;
+  return (
+    <>
+      <Navbar />
+      <h2>Bienvenue sur le Dashboard Admin</h2>
+    </>
+  );
 }
