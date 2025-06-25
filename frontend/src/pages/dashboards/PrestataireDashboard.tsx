@@ -4,7 +4,7 @@ export default function PrestataireDashboard() {
   return (
     <>
       <Navbar />
-      <h2>Bienvenue sur le Dashboard Admin</h2>
+      <h2>Bienvenue sur le Dashboard Prestataire</h2>
     </>
   );
 }
