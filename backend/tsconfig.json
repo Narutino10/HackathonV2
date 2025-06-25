@@ -12,10 +12,12 @@
     "baseUrl": "./",
     "incremental": true,
     "skipLibCheck": true,
+    "strict": false,                        // ✅ active toutes les vérifications strictes
+    "noImplicitAny": true,                 // ✅ empêche les any implicites
     "strictNullChecks": true,
     "forceConsistentCasingInFileNames": true,
-    "noImplicitAny": false,
-    "strictBindCallApply": false,
-    "noFallthroughCasesInSwitch": false
+    "noFallthroughCasesInSwitch": false,
+    "strictBindCallApply": true,           // ✅ recommandé avec strict
+    "esModuleInterop": true                // ✅ souvent utile pour axios, etc.
   }
 }

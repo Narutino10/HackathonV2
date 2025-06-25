@@ -3,19 +3,20 @@ import axios from 'axios';
 
 const FindPrestataire: React.FC = () => {
   const [prompt, setPrompt] = useState('');
-  const [suggestions, setSuggestions] = useState<string[]>([]);
+  const [suggestion, setSuggestion] = useState('');
 
   const handleSearch = async () => {
     try {
-      const res = await axios.post('http://localhost:5000/ia/suggest', { prompt });
-      setSuggestions(res.data); // suppose que l'IA renvoie un tableau de suggestions
+      const res = await axios.post('http://localhost:5000/ai/prompt', { prompt });
+      setSuggestion(res.data.response); // réponse de l'IA
     } catch (err) {
       console.error(err);
+      setSuggestion("Erreur lors de la recherche");
     }
   };
 
   return (
-    <div>
+    <div style={{ padding: '20px' }}>
       <h1>Décrivez votre besoin</h1>
       <textarea
         placeholder="J'ai besoin d'un site e-commerce pour vendre des vêtements..."
@@ -25,16 +26,14 @@ const FindPrestataire: React.FC = () => {
         cols={60}
       />
       <br />
-      <button onClick={handleSearch}>Rechercher</button>
+      <button onClick={handleSearch} style={{ marginTop: '10px' }}>
+        Rechercher
+      </button>
 
-      {suggestions.length > 0 && (
-        <div>
-          <h2>Suggestions de prestataires ou solutions IA</h2>
-          <ul>
-            {suggestions.map((s, idx) => (
-              <li key={idx}>{s}</li>
-            ))}
-          </ul>
+      {suggestion && (
+        <div style={{ marginTop: '20px' }}>
+          <h2>Suggestion de l'IA</h2>
+          <p>{suggestion}</p>
         </div>
       )}
     </div>
