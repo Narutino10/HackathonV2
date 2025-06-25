@@ -7,6 +7,8 @@ import { ProjectsModule } from './projects/projects.module';
 import { ChatModule } from './chat/chat.module';
 import { PaymentsModule } from './payments/payments.module';
 import { ReviewsModule } from './reviews/reviews.module';
+import { RolesGuard } from './common/guards/roles.guard';
+import { APP_GUARD } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -23,6 +25,12 @@ import { ReviewsModule } from './reviews/reviews.module';
     ChatModule,
     PaymentsModule,
     ReviewsModule,
+  ],
+  providers: [
+    {
+      provide: APP_GUARD,
+      useClass: RolesGuard,
+    },
   ],
 })
 export class AppModule {}

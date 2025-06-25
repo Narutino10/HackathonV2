@@ -1,7 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, OneToMany } from 'typeorm';
 import { Project } from '../projects/project.entity';
 
-export type UserRole = 'CLIENT' | 'PRESTATAIRE';
+export type UserRole = 'CLIENT' | 'PRESTATAIRE' | 'ADMIN';
 
 @Entity()
 export class User {
@@ -14,7 +14,7 @@ export class User {
   @Column()
   password: string;
 
-  @Column({ type: 'enum', enum: ['CLIENT', 'PRESTATAIRE'] })
+  @Column({ type: 'enum', enum: ['CLIENT', 'PRESTATAIRE', 'ADMIN'], default: 'CLIENT' })
   role: UserRole;
 
   @CreateDateColumn()
