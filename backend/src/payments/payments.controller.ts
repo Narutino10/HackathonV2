@@ -30,6 +30,13 @@ export class PaymentsController {
     return this.paymentsService.markAsPaid(id);
   }
 
+  @Post('create-payment-intent')
+  createPaymentIntent(
+    @Body() body: { amount: number; currency: string; prestataireId: number; reservation: any },
+  ) {
+    return this.paymentsService.createPaymentIntent(body);
+  }
+
   @Get('project/:projectId')
   getByProject(@Param('projectId', ParseIntPipe) projectId: number): Promise<Payment[]> {
     return this.paymentsService.findByProject(projectId);

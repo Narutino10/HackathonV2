@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from '../users/users.service';
+import { User } from '../users/user.entity';
 import axios, { AxiosResponse } from 'axios';
 
 interface MistralResponse {
@@ -20,6 +21,11 @@ interface PrestataireSuggestion {
   tarifHoraire: number;
   score: number;
   raison: string;
+}
+
+interface AIAnalysisResult {
+  score: number;
+  explanation: string;
 }
 
 @Injectable()
@@ -149,6 +155,71 @@ Si aucun prestataire ne convient, retourne un tableau vide [].
     } catch (err) {
       console.error('Erreur lors de la suggestion de prestataires:', err);
       throw new Error('Erreur lors de la recherche de prestataires');
+    }
+  }
+
+  /**
+   * Analyse individuelle d'un prestataire par l'IA
+   */
+  async analyzePrestataire(prestataire: User, demande: string): Promise<AIAnalysisResult> {
+    try {
+      const analysisPrompt = `
+Analyse ce prestataire pour la demande suivante :
+
+DEMANDE CLIENT: "${demande}"
+
+PRESTATAIRE:
+- Nom: ${prestataire.nom || 'Non renseigné'} ${prestataire.prenom || ''}
+- Email: ${prestataire.email}
+- Compétences: ${prestataire.competences || 'Non renseignées'}
+- Description: ${prestataire.description || 'Aucune description'}
+- Tarif: ${prestataire.tarifHoraire || 'Non renseigné'}€/h
+
+Analyse la pertinence de ce prestataire pour cette demande en considérant :
+1. La correspondance des compétences
+2. L'expérience apparent dans la description
+3. Le rapport qualité/prix
+4. L'adéquation générale au projet
+
+Réponds UNIQUEMENT au format JSON suivant :
+{
+  "score": number (1-100),
+  "explanation": "Explication courte et précise de ton analyse (max 150 caractères)"
+}
+`;
+
+      const response = await this.ask(analysisPrompt);
+
+      try {
+        const analysis = JSON.parse(response) as AIAnalysisResult;
+        
+        // Validation des données
+        if (typeof analysis.score !== 'number' || analysis.score < 0 || analysis.score > 100) {
+          analysis.score = 50;
+        }
+        
+        if (!analysis.explanation || typeof analysis.explanation !== 'string') {
+          analysis.explanation = 'Prestataire potentiellement adapté au projet';
+        }
+
+        return analysis;
+      } catch (parseError) {
+        console.error('Erreur de parsing JSON pour analyse prestataire:', parseError);
+        
+        // Fallback
+        return {
+          score: 50,
+          explanation: 'Analyse IA indisponible, évaluation basique effectuée',
+        };
+      }
+    } catch (err) {
+      console.error("Erreur lors de l'analyse IA du prestataire:", err);
+      
+      // Fallback en cas d'erreur
+      return {
+        score: 40,
+        explanation: 'Erreur IA, évaluation manuelle recommandée',
+      };
     }
   }
 }

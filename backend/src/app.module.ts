@@ -10,6 +10,7 @@ import { ReviewsModule } from './reviews/reviews.module';
 import { RolesGuard } from './common/guards/roles.guard';
 import { APP_GUARD } from '@nestjs/core';
 import { AiModule } from './ai/ai.module';
+import { MatchingModule } from './matching/matching.module';
 
 @Module({
   imports: [
@@ -27,6 +28,7 @@ import { AiModule } from './ai/ai.module';
     PaymentsModule,
     ReviewsModule,
     AiModule,
+    MatchingModule,
   ],
   providers: [
     {

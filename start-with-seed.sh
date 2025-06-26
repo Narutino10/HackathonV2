@@ -2,17 +2,17 @@
 
 echo "🚀 Démarrage du projet avec Docker..."
 
-# Arrêter les conteneurs existants
+# Arrêter les conteneurs existants et nettoyer
 echo "⏹️ Arrêt des conteneurs existants..."
 docker-compose down
 
-# Supprimer les volumes pour repartir de zéro (optionnel)
-echo "🗑️ Nettoyage des volumes (optionnel)..."
-# docker-compose down -v
+# Nettoyer les images pour forcer la reconstruction
+echo "🧹 Nettoyage des images existantes..."
+docker-compose build --no-cache
 
-# Construire et démarrer les services
-echo "🏗️ Construction et démarrage des services..."
-docker-compose up --build -d
+# Démarrer les services avec les nouvelles images
+echo "🏗️ Démarrage des services..."
+docker-compose up -d
 
 # Attendre que la base de données soit prête
 echo "⏳ Attente de la base de données..."

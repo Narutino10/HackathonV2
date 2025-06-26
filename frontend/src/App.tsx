@@ -7,6 +7,7 @@ import PrestataireDashboard from "./pages/dashboards/PrestataireDashboard";
 import Projects from "./pages/Projects";
 import SearchPrestataire from "./pages/SearchPrestataire";
 import ContactPrestataire from "./pages/ContactPrestataire";
+import ContactReservePrestataireSimplifie from "./pages/ContactReservePrestataireSimplifie";
 import Payment from "./pages/Payment";
 import Navbar from "./components/Navbar";
 import CreateProject from './pages/CreateProject';
@@ -27,6 +28,7 @@ function App() {
         <Route path="/search" element={<SearchPrestataire />} />
         <Route path="/search-prestataire" element={<SearchPrestataire />} />
         <Route path="/contact-prestataire" element={<ContactPrestataire />} />
+        <Route path="/contact-reserve/:prestataireId" element={<ContactReservePrestataireSimplifie />} />
         <Route path="/payment" element={<Payment />} />
         <Route path="/create-project" element={<CreateProject />} />
         <Route path="/dashboard" element={<ClientDashboard />} />

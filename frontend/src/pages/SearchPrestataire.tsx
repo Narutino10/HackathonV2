@@ -25,6 +25,7 @@ const SearchPrestataire: React.FC = () => {
   const [prompt, setPrompt] = useState('');
   const [result, setResult] = useState<SearchResponse | null>(null);
   const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const handleSearch = async () => {
     setLoading(true);
@@ -163,10 +164,10 @@ const SearchPrestataire: React.FC = () => {
                           cursor: 'pointer',
                         }}
                         onClick={() => {
-                          window.location.href = `mailto:${prestataire.email}?subject=Proposition de collaboration&body=Bonjour ${prestataire.prenom}, je suis intéressé par vos services...`;
+                          navigate(`/contact-reserve/${prestataire.id}`);
                         }}
                       >
-                        Contacter ce prestataire
+                        Réserver et Payer
                       </button>
                     </div>
                   ))}

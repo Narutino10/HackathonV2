@@ -26,4 +26,31 @@ export class PaymentsService {
     payment.status = 'PAYE';
     return this.repo.save(payment);
   }
+
+  createPaymentIntent(data: {
+    amount: number;
+    currency: string;
+    prestataireId: number;
+    reservation: any;
+  }) {
+    try {
+      // Simulation d'une intention de paiement (sans Stripe pour l'instant)
+      const mockPaymentIntent = {
+        id: `pi_mock_${Date.now()}`,
+        client_secret: `pi_mock_${Date.now()}_secret_mock`,
+        amount: data.amount,
+        currency: data.currency,
+        status: 'requires_payment_method',
+      };
+
+      return {
+        clientSecret: mockPaymentIntent.client_secret,
+        paymentIntentId: mockPaymentIntent.id,
+        message: 'Intention de paiement créée (mode simulation)',
+      };
+    } catch (error) {
+      console.error('Erreur simulation paiement:', error);
+      throw new Error('Erreur lors de la création du paiement');
+    }
+  }
 }
