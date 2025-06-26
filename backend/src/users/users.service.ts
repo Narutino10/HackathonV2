@@ -22,4 +22,16 @@ export class UsersService {
   async findById(id: number): Promise<User | null> {
     return this.repo.findOneBy({ id });
   }
+
+  async findPrestataires(): Promise<User[]> {
+    return this.repo.find({
+      where: { role: 'PRESTATAIRE' },
+      select: ['id', 'email', 'nom', 'prenom', 'competences', 'description', 'tarifHoraire'],
+    });
+  }
+
+  async update(id: number, updateData: Partial<User>): Promise<User | null> {
+    await this.repo.update(id, updateData);
+    return this.findById(id);
+  }
 }

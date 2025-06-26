@@ -6,6 +6,8 @@ import ClientDashboard from "./pages/dashboards/ClientDashboard";
 import PrestataireDashboard from "./pages/dashboards/PrestataireDashboard";
 import Projects from "./pages/Projects";
 import SearchPrestataire from "./pages/SearchPrestataire";
+import ContactPrestataire from "./pages/ContactPrestataire";
+import Payment from "./pages/Payment";
 import Navbar from "./components/Navbar";
 import CreateProject from './pages/CreateProject';
 
@@ -23,7 +25,11 @@ function App() {
         <Route path="/prestataire" element={<PrestataireDashboard />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/search" element={<SearchPrestataire />} />
+        <Route path="/search-prestataire" element={<SearchPrestataire />} />
+        <Route path="/contact-prestataire" element={<ContactPrestataire />} />
+        <Route path="/payment" element={<Payment />} />
         <Route path="/create-project" element={<CreateProject />} />
+        <Route path="/dashboard" element={<ClientDashboard />} />
         {/* Redirection pour les routes non définies */}
       </Routes>
     </BrowserRouter>
