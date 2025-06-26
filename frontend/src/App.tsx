@@ -4,6 +4,8 @@ import Register from "./pages/Register";
 import AdminDashboard from "./pages/dashboards/AdminDashboard";
 import ClientDashboard from "./pages/dashboards/ClientDashboard";
 import PrestataireDashboard from "./pages/dashboards/PrestataireDashboard";
+import PrestataireOffers from "./pages/dashboards/PrestataireOffers";
+import PrestataireProfile from "./pages/dashboards/PrestataireProfile";
 import Projects from "./pages/Projects";
 import SearchPrestataire from "./pages/SearchPrestataire";
 import ContactPrestataire from "./pages/ContactPrestataire";
@@ -24,6 +26,8 @@ function App() {
         <Route path="/admin" element={<AdminDashboard />} />
         <Route path="/client" element={<ClientDashboard />} />
         <Route path="/prestataire" element={<PrestataireDashboard />} />
+        <Route path="/prestataire/offers" element={<PrestataireOffers />} />
+        <Route path="/prestataire/profile" element={<PrestataireProfile />} />
         <Route path="/projects" element={<Projects />} />
         <Route path="/search" element={<SearchPrestataire />} />
         <Route path="/search-prestataire" element={<SearchPrestataire />} />

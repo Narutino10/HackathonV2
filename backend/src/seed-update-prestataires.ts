@@ -1,6 +1,7 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { UsersService } from './users/users.service';
+import * as bcrypt from 'bcrypt';
 
 async function updatePrestataires() {
   const app = await NestFactory.createApplicationContext(AppModule);
@@ -12,6 +13,7 @@ async function updatePrestataires() {
   const prestatairesData = [
     {
       email: 'wordpress@agency.com',
+      password: await bcrypt.hash('password123', 10),
       nom: 'Dupont',
       prenom: 'Marie',
       competences: 'WordPress, PHP, MySQL, CSS, JavaScript, Responsive Design',
@@ -20,6 +22,7 @@ async function updatePrestataires() {
     },
     {
       email: 'shopify@expert.com',
+      password: await bcrypt.hash('password123', 10),
       nom: 'Martin',
       prenom: 'Lucas',
       competences: 'Shopify, E-commerce, Liquid, JavaScript, CSS, API Shopify',
@@ -28,6 +31,7 @@ async function updatePrestataires() {
     },
     {
       email: 'seo@guru.io',
+      password: await bcrypt.hash('password123', 10),
       nom: 'Rousseau',
       prenom: 'Sophie',
       competences: 'SEO, Google Analytics, Google Search Console, Content Marketing',
@@ -36,6 +40,7 @@ async function updatePrestataires() {
     },
     {
       email: 'landing@designer.com',
+      password: await bcrypt.hash('password123', 10),
       nom: 'Moreau',
       prenom: 'Alexandre',
       competences: 'Design UI/UX, Figma, Adobe Creative Suite, HTML, CSS, Landing Pages',
@@ -44,6 +49,7 @@ async function updatePrestataires() {
     },
     {
       email: 'automation@ai-solutions.com',
+      password: await bcrypt.hash('password123', 10),
       nom: 'Bernard',
       prenom: 'Emma',
       competences: 'Python, Machine Learning, Automation, API, Zapier, Intelligence Artificielle',
@@ -60,7 +66,7 @@ async function updatePrestataires() {
         console.log(`✅ Prestataire mis à jour: ${prestataireData.prenom} ${prestataireData.nom}`);
       }
     } catch (error: any) {
-      console.error(`❌ Erreur lors de la mise à jour de ${prestataireData.email}:`, error.message);
+      console.error(`❌ Erreur lors de la mise à jour de ${prestataireData.email}:`, error?.message || error);
     }
   }
 
