@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import axios, { AxiosResponse, AxiosError } from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 interface MistralResponse {
   choices: {
@@ -12,7 +12,7 @@ interface MistralResponse {
 @Injectable()
 export class AiService {
   private apiUrl = 'https://api.mistral.ai/v1/chat/completions';
-  private apiKey =  process.env.MISTRAL_API_KEY;
+  private apiKey = process.env.MISTRAL_API_KEY!;
 
   async ask(prompt: string): Promise<string> {
     try {
@@ -31,14 +31,15 @@ export class AiService {
       );
 
       return response.data.choices[0].message.content;
-    } catch (error: unknown) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error('Axios error:', error.response.data);
-        return 'Erreur API IA';
+    } catch (err) {
+      if (axios.isAxiosError(err)) {
+        const axiosError = err;
+        console.error('Erreur Mistral :', axiosError.response?.data ?? axiosError.message);
       } else {
-        console.error('Unexpected error:', (error as Error).message);
-        return 'Erreur inattendue';
+        console.error('Erreur inconnue :', err);
       }
+
+      throw new Error("Erreur IA : impossible d'obtenir une réponse");
     }
   }
 }
