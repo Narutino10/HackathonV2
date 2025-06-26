@@ -10,14 +10,19 @@ interface PrestataireSuggestion {
   competences: string;
   description: string;
   tarifHoraire: number;
-  score: number;
-  raison: string;
+  finalScore: number;
+  explanation: string;
+  matchedKeywords?: string[];
 }
 
 interface SearchResponse {
   success: boolean;
   prestataires: PrestataireSuggestion[];
   message: string;
+  searchAnalysis?: {
+    category: string;
+    complexity: string;
+  };
   error?: string;
 }
 
@@ -53,151 +58,166 @@ const SearchPrestataire: React.FC = () => {
   };
 
   return (
-    <div style={{ padding: '20px', maxWidth: '1200px', margin: '0 auto' }}>
-      <h1>Recherche de prestataire par IA</h1>
+    <div className="page-container">
+      <div className="card">
+        <h1 className="page-title">🔍 Recherche Intelligente de Prestataires</h1>
+        <p className="page-subtitle">Décrivez votre projet et notre IA trouvera les meilleurs prestataires pour vous</p>
 
-      <div style={{ marginBottom: '20px' }}>
-        <textarea
-          placeholder="Décrivez votre besoin ici... (ex: 'Je cherche un développeur web pour créer un site e-commerce')"
-          value={prompt}
-          onChange={(e) => setPrompt(e.target.value)}
-          rows={4}
-          style={{
-            width: '100%',
-            padding: '10px',
-            border: '1px solid #ddd',
-            borderRadius: '5px',
-            fontSize: '16px',
-          }}
-        />
+        <div className="form-group">
+          <textarea
+            placeholder="Décrivez votre besoin ici... 
+Exemples :
+• 'Je cherche un développeur web pour créer un site e-commerce avec React'
+• 'J'ai besoin d'un designer pour refaire l'identité visuelle de mon entreprise'
+• 'Développement d'une application mobile iOS et Android'"
+            value={prompt}
+            onChange={(e) => setPrompt(e.target.value)}
+            rows={5}
+            className="textarea-field"
+          />
+        </div>
+
+        <button
+          onClick={handleSearch}
+          disabled={loading || !prompt.trim()}
+          className={`btn ${loading || !prompt.trim() ? 'btn-disabled' : 'btn-primary'}`}
+        >
+          {loading ? (
+            <>
+              <span className="loading-spinner"></span>
+              Recherche en cours...
+            </>
+          ) : (
+            <>
+              🚀 Rechercher des prestataires
+            </>
+          )}
+        </button>
       </div>
 
-      <button
-        onClick={handleSearch}
-        disabled={loading || !prompt.trim()}
-        style={{
-          padding: '10px 20px',
-          backgroundColor: loading ? '#ccc' : '#007bff',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: loading ? 'not-allowed' : 'pointer',
-          fontSize: '16px',
-        }}
-      >
-        {loading ? 'Recherche en cours...' : 'Rechercher'}
-      </button>
-
       {result && (
-        <div style={{ marginTop: '30px' }}>
+        <div className="results-section">
           {result.success ? (
             <>
-              <h3 style={{ color: '#28a745' }}>{result.message}</h3>
+              <div className="card">
+                <div className="success-header">
+                  <h3>✅ {result.message}</h3>
+                  {result.searchAnalysis && (
+                    <div className="search-analysis">
+                      <span className="badge">Catégorie: {result.searchAnalysis.category}</span>
+                      <span className="badge">Complexité: {result.searchAnalysis.complexity}</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
               {result.prestataires.length > 0 ? (
-                <div style={{ display: 'grid', gap: '20px', marginTop: '20px' }}>
+                <div className="prestataires-grid">
                   {result.prestataires.map((prestataire) => (
-                    <div
-                      key={prestataire.id}
-                      style={{
-                        border: '1px solid #ddd',
-                        borderRadius: '8px',
-                        padding: '20px',
-                        backgroundColor: '#f9f9f9',
-                        boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                      }}
-                    >
-                      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                        <h4 style={{ margin: 0, color: '#333' }}>
-                          {prestataire.prenom} {prestataire.nom}
-                        </h4>
-                        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                          <span
-                            style={{
-                              backgroundColor: '#007bff',
-                              color: 'white',
-                              padding: '4px 8px',
-                              borderRadius: '12px',
-                              fontSize: '12px',
-                              fontWeight: 'bold',
-                            }}
-                          >
-                            Score: {prestataire.score}/10
+                    <div key={prestataire.id} className="prestataire-card">
+                      <div className="prestataire-header">
+                        <div className="prestataire-info">
+                          <h4 className="prestataire-name">
+                            👨‍💻 {prestataire.prenom} {prestataire.nom}
+                          </h4>
+                          <p className="prestataire-email">📧 {prestataire.email}</p>
+                        </div>
+                        <div className="prestataire-metrics">
+                          <span className="score-badge">
+                            ⭐ {Math.round(prestataire.finalScore / 10)}/10
                           </span>
-                          <span style={{ fontWeight: 'bold', color: '#28a745' }}>
-                            {prestataire.tarifHoraire}€/h
+                          <span className="price-badge">
+                            💰 {prestataire.tarifHoraire}€/h
                           </span>
                         </div>
                       </div>
 
-                      <p style={{ margin: '5px 0', color: '#666' }}>
-                        <strong>Email:</strong> {prestataire.email}
-                      </p>
+                      <div className="prestataire-competences">
+                        <strong>🛠️ Compétences:</strong>
+                        <div className="competences-tags">
+                          {prestataire.competences.split(',').map((comp, index) => (
+                            <span key={index} className="competence-tag">
+                              {comp.trim()}
+                            </span>
+                          ))}
+                        </div>
+                      </div>
 
-                      <p style={{ margin: '10px 0' }}>
-                        <strong>Compétences:</strong> {prestataire.competences}
-                      </p>
+                      <div className="prestataire-description">
+                        <strong>📝 Description:</strong>
+                        <p>{prestataire.description}</p>
+                      </div>
 
-                      <p style={{ margin: '10px 0' }}>
-                        <strong>Description:</strong> {prestataire.description}
-                      </p>
+                      {prestataire.matchedKeywords && prestataire.matchedKeywords.length > 0 && (
+                        <div className="matched-keywords">
+                          <strong>🎯 Mots-clés correspondants:</strong>
+                          <div className="keywords-tags">
+                            {prestataire.matchedKeywords.map((keyword, index) => (
+                              <span key={index} className="keyword-tag">
+                                {keyword}
+                              </span>
+                            ))}
+                          </div>
+                        </div>
+                      )}
 
-                      <div
-                        style={{
-                          marginTop: '15px',
-                          padding: '10px',
-                          backgroundColor: '#e7f3ff',
-                          borderRadius: '5px',
-                          borderLeft: '4px solid #007bff',
-                        }}
-                      >
-                        <strong>Pourquoi ce prestataire?</strong> {prestataire.raison}
+                      <div className="explanation-box">
+                        <strong>🤖 Analyse du matching:</strong>
+                        <p>{prestataire.explanation}</p>
                       </div>
 
                       <button
-                        style={{
-                          marginTop: '15px',
-                          padding: '8px 16px',
-                          backgroundColor: '#28a745',
-                          color: 'white',
-                          border: 'none',
-                          borderRadius: '5px',
-                          cursor: 'pointer',
-                        }}
+                        className="btn btn-success contact-btn"
                         onClick={() => {
                           navigate(`/contact-reserve/${prestataire.id}`);
                         }}
                       >
-                        Réserver et Payer
+                        💼 Réserver et Contacter
                       </button>
                     </div>
                   ))}
                 </div>
               ) : (
-                <p style={{ color: '#666', fontStyle: 'italic' }}>
-                  Aucun prestataire ne correspond exactement à votre demande.
-                </p>
+                <div className="card">
+                  <div className="no-results">
+                    <h3>😔 Aucun prestataire trouvé</h3>
+                    <p>Essayez de reformuler votre demande ou d'être plus spécifique sur vos besoins.</p>
+                  </div>
+                </div>
               )}
             </>
           ) : (
-            <div style={{ color: '#dc3545' }}>
-              <h3>Erreur</h3>
+            <div className="card error-card">
+              <h3>❌ Erreur</h3>
               <p>{result.message}</p>
-              {result.error && <p style={{ fontSize: '14px' }}>Détails: {result.error}</p>}
+              {result.error && <p className="error-details">Détails: {result.error}</p>}
             </div>
           )}
         </div>
       )}
 
-      <div style={{ marginTop: '40px', padding: '20px', backgroundColor: '#f8f9fa', borderRadius: '5px' }}>
+      <div className="card examples-section">
         <h4>💡 Exemples de recherches que vous pouvez essayer :</h4>
-        <ul style={{ paddingLeft: '20px' }}>
-          <li>"Je cherche un développeur web React pour créer un site e-commerce"</li>
-          <li>"J'ai besoin d'un designer pour refaire l'identité visuelle de mon entreprise"</li>
-          <li>"Je veux améliorer le SEO de mon site web"</li>
-          <li>"Développement d'une application mobile iOS et Android"</li>
-          <li>"Rédaction de contenu pour mon blog et stratégie marketing"</li>
-          <li>"Analyse de données et création de tableaux de bord"</li>
-        </ul>
+        <div className="examples-grid">
+          <div className="example-item" onClick={() => setPrompt("Je cherche un développeur web React pour créer un site e-commerce")}>
+            🛒 Développement d'un site e-commerce React
+          </div>
+          <div className="example-item" onClick={() => setPrompt("J'ai besoin d'un designer pour refaire l'identité visuelle de mon entreprise")}>
+            🎨 Refonte d'identité visuelle d'entreprise
+          </div>
+          <div className="example-item" onClick={() => setPrompt("Je veux améliorer le SEO de mon site web")}>
+            📈 Amélioration SEO d'un site web
+          </div>
+          <div className="example-item" onClick={() => setPrompt("Développement d'une application mobile iOS et Android")}>
+            📱 Application mobile native
+          </div>
+          <div className="example-item" onClick={() => setPrompt("Rédaction de contenu pour mon blog et stratégie marketing")}>
+            ✍️ Rédaction et stratégie marketing
+          </div>
+          <div className="example-item" onClick={() => setPrompt("Analyse de données et création de tableaux de bord")}>
+            📊 Analyse de données et dashboard
+          </div>
+        </div>
       </div>
     </div>
   );
